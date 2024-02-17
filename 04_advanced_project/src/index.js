@@ -10,8 +10,11 @@ import app from "./app.js";
 
 connectToDB()
   .then(() => {
+    app.on("error", (error) => {
+      console.error(`Error: ${error.message}`);
+    });
     app.listen(process.env.PORT || 8000, () => {
-      console.log(`Server is running at http://localhost:${process.env.PORT}`);
+      console.log(`Server is running at PORT : ${process.env.PORT || 8000}`);
     });
   })
   .catch((error) => {
