@@ -32,10 +32,12 @@ app.use(express.static("public"));
 // For setting and using cookies
 app.use(cookieParser());
 
+// Routes Import
+import userRouter from "./routes/user.routes.js";
+
+// Routes Declaration
+app.use("/api/v1/users", userRouter);
+
 export default app;
-
-
-
-
 
 // Notes for middlewrare
