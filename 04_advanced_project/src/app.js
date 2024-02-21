@@ -3,6 +3,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 const app = express();
+
+// NOTE : .use() is used to use middleware
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
@@ -32,12 +34,19 @@ app.use(express.static("public"));
 // For setting and using cookies
 app.use(cookieParser());
 
-// Routes Import
+// -----------------------------------------------------------------
+
+
+// routes import 
 import userRouter from "./routes/user.routes.js";
 
-// Routes Declaration
+// routes declaration
+// app.use('/users', userRouter);
+// http://localhost:8080/users/register
+
+// GOOD PRACTICE
 app.use("/api/v1/users", userRouter);
+// http://localhost:8080/api/v1/users/register
+
 
 export default app;
-
-// Notes for middlewrare
