@@ -1,10 +1,7 @@
 // Saara code index file mei rakh du
 // DB folder mei function la logic likh ke main file mei import kara ke run
 
-import dotenv from "dotenv";
-dotenv.config({
-  path: "./env",
-});
+import 'dotenv/config';
 import connectToDB from "./db/index.js";
 import app from "./app.js";
 
