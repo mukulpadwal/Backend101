@@ -1,7 +1,7 @@
-// Saara code index file mei rakh du
-// DB folder mei function la logic likh ke main file mei import kara ke run
-
-import 'dotenv/config';
+// DIFFERENT WAYS TO CONNECT TO DATABASE
+// 1. Saara code index file mei rakh du
+// 2. Make a seperate folder for database and create a function to connect to database and import here
+import "dotenv/config";
 import connectToDB from "./db/index.js";
 import app from "./app.js";
 
