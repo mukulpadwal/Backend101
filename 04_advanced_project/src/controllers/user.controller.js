@@ -1,7 +1,7 @@
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/apiError.js";
 import { User } from "../models/user.model.js";
-import uploadOnCloudinary from "../utils/cloudinary.js";
+import { deleteOnCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js";
 import ApiResponse from "../utils/apiResponse.js";
 import jwt from "jsonwebtoken";
 
@@ -285,11 +285,36 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 
 const updateUserAvatar = asyncHandler(async (req, res) => {
   // 1. get new avatar from the user
-  // 2. upload it on cloudinary 
+  // 2. upload it on cloudinary
   // 3. update the url in the database for that particular user
+  const avatarLocalPath = req.files?.avatar[0]?.path;
 
-  
-})
+  if (!avatarLocalPath) {
+    throw new ApiError(400, "Avatar is required!!!");
+  }
+
+  const avatar = await uploadOnCloudinary(avatarLocalPath);
+
+  if (!avatar) {
+    throw new ApiError(500, "Error uploading avatar");
+  }
+
+  await deleteOnCloudinary(req.user?.avatar);
+
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: [{ avatar }],
+    },
+    {
+      new: true,
+    }
+  ).select("-password");
+
+  res
+    .status(201)
+    .json(new ApiResponse(201, user, "Avatar Uploaded Successfully!!!"));
+});
 
 export {
   registerUser,
@@ -299,6 +324,7 @@ export {
   changeCurrentPassword,
   getCurrentUser,
   updateAccountDetails,
+  updateUserAvatar,
 };
 
 // Just to understand the Working of some
