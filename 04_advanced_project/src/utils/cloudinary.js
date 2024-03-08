@@ -29,4 +29,20 @@ const uploadOnCloudinary = async (localFilePath) => {
   }
 };
 
-export default uploadOnCloudinary;
+const deleteOnCloudinary = async (cloudinaryFileUrl) => {
+  try {
+    const fileToDelete = cloudinaryFileUrl
+      .split("/")
+      [--cloudinaryFileUrl.split("/").length].split(".")[0];
+
+    const response = await cloudinary.api.delete_resources([fileToDelete], {
+      resource_type: "auto",
+    });
+
+    return response;
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+export { uploadOnCloudinary, deleteOnCloudinary };
