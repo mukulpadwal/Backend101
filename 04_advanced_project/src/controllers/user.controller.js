@@ -346,6 +346,90 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, user, "Cover Image Uploaded Successfully!!!"));
 });
 
+const getUserChannelProfile = asyncHandler(async (req, res) => {
+  // We will get the username from the URL
+  const { username } = req.params;
+
+  if (!username?.trim()) {
+    throw new ApiError(400, "username is missing");
+  }
+
+  // User.find({username})
+
+  // Let's do it all at once
+  const channel = await User.aggregate([
+    // 1st Pipeline : finding the user from username
+    {
+      $match: {
+        username: username?.toLowerCase(),
+      },
+    },
+
+    // 2nd Pipeline : let's lookup for subscribers
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "channel",
+        as: "subscribers",
+      },
+    },
+
+    // 3rd Pipeline : let's lookup for channels subscribed
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "subscriber",
+        as: "subscribedTo",
+      },
+    },
+
+    // 4th Pipeline : let's add all the fields
+    {
+      $addFields: {
+        subscribersCount: {
+          $size: "$subscribers",
+        },
+        channeIsSubscribedToCount: {
+          $size: "$subscribedTo",
+        },
+        isSubscribed: {
+          $cond: {
+            if: { $in: [req.user?._id, "$subscribers.subscriber"] },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+
+    // 5th Pipeline : sending selected fields
+    {
+      $project: {
+        fullName: 1,
+        username: 1,
+        subscribersCount: 1,
+        channeIsSubscribedToCount: 1,
+        isSubscribed: 1,
+        avatar: 1,
+        coverImage: 1,
+        email: 1,
+      },
+    },
+  ]);
+
+  console.log(channel);
+
+  if (!channel?.length) {
+    throw new ApiError(400, "No channel found");
+  }
+
+  return res
+    .status(201)
+    .json(new ApiResponse(200, channel[0], "channel fetched successfully"));
+});
+
 export {
   registerUser,
   loginUser,
@@ -356,6 +440,7 @@ export {
   updateAccountDetails,
   updateUserAvatar,
   updateUserCoverImage,
+  getUserChannelProfile,
 };
 
 // Just to understand the Working of some
