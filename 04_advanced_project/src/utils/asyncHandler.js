@@ -1,8 +1,17 @@
 const asyncHandler = (requestHandler) => {
+  // requestHandler is a async function with params (req, res)
+  // We need to execute the function
+  // returning a callback function
   return (req, res, next) => {
-    Promise.resolve(requestHandler(req, res, next)).catch((error) =>
-      next(error)
-    );
+    new Promise((resolve, reject) => {
+      if (requestHandler) {
+        resolve(requestHandler(req, res, next));
+      } else {
+        reject("Controller Function Missing...");
+      }
+    })
+      .then(() => next())
+      .catch((error) => console.log(error));
   };
 };
 

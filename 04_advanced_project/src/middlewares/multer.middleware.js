@@ -1,3 +1,4 @@
+// This line imports the Multer package into your code. multer is a middleware for handling multipart/form-data, which is primarily used for uploading files.
 import multer from "multer";
 
 const storage = multer.diskStorage({

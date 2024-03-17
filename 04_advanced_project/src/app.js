@@ -1,10 +1,18 @@
+// express package to initialize the express server
 import express from "express";
+
+// cors package to resolve the cors issue from our backend
 import cors from "cors";
+
+// cookie-parser package to help us send and receive cookies in our app
 import cookieParser from "cookie-parser";
 
+// Here we are initializing our expressa app
 const app = express();
 
-// NOTE : .use() is used to use middleware
+// NOTE : .use() is used to use middleware to our entire express app
+
+// Here we are using the cors as a middleware
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
@@ -46,7 +54,7 @@ import userRouter from "./routes/user.routes.js";
 
 // GOOD PRACTICE
 app.use("/api/v1/users", userRouter);
-// http://localhost:8080/api/v1/users/register
+// http://localhost:8080/api/v1/users/----
 
 
 export default app;

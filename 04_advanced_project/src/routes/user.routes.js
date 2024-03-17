@@ -1,4 +1,6 @@
 import { Router } from "express";
+
+// Importing all our user controllers
 import {
   registerUser,
   loginUser,
@@ -12,11 +14,17 @@ import {
   getUserChannelProfile,
   getWatchHistory,
 } from "../controllers/user.controller.js";
+
+// importing our custom made middleware to extend the functionality to upload files on cloudinary.
 import { upload } from "../middlewares/multer.middleware.js";
+
+// importing our custom made middleware to authenticate the user before running any controller,.
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
+// configuring our controller
 const router = Router();
 
+// Route 1 : Register New User
 router.route("/register").post(
   upload.fields([
     {
@@ -30,6 +38,7 @@ router.route("/register").post(
   registerUser
 );
 
+// Route 2 : Login User
 router.route("/login").post(loginUser);
 
 // Secured Routes

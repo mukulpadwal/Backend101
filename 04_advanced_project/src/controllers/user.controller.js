@@ -20,6 +20,7 @@ const generateAccessAndRefreshToken = async (userId) => {
   }
 };
 
+// Controller 1 : Registering a New User
 const registerUser = asyncHandler(async (req, res) => {
   // Logic to register user
   // 1. Get all the data sent from the client
@@ -36,7 +37,7 @@ const registerUser = asyncHandler(async (req, res) => {
   if (
     [username, email, fullName, password].some((field) => field?.trim() === "")
   ) {
-    throw new ApiError(400, "All fields are required");
+    throw new ApiError(400, "Kindly provide data for all the fields...");
   }
 
   // Check for existing user based on email or username
@@ -45,16 +46,26 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (existingUser) {
+    res
+      .status(409)
+      .json(
+        new ApiResponse(
+          409,
+          {},
+          "User with same email or username already exists!!! Please try again with different email or username..."
+        )
+      );
+
     throw new ApiError(
       409,
-      "User with same email or username already exists!!! Please try with different email or username"
+      "User with same email or username already exists!!! Please try again with different email or username..."
     );
   }
 
   // Handeling file upload
-  const avatarLocalPath = req.files?.avatar[0]?.path;
-
   // console.log(req.files);
+
+  const avatarLocalPath = req.files?.avatar[0]?.path;
 
   let coverImageLocalPath = "";
   if (req.files && req.files.coverImage && req.files.coverImage[0].length > 0) {
@@ -513,3 +524,31 @@ export {
     console.log(field?.trim().length);
   });
   */
+
+
+  // [Object: null prototype] {
+  //   avatar: [
+  //     {
+  //       fieldname: 'avatar',
+  //       originalname: '7d34d9d53640af5cfd2614c57dfa7f13.png',
+  //       encoding: '7bit',
+  //       mimetype: 'image/png',
+  //       destination: './public/temp/',
+  //       filename: '7d34d9d53640af5cfd2614c57dfa7f13.png',
+  //       path: 'public\\temp\\7d34d9d53640af5cfd2614c57dfa7f13.png',
+  //       size: 10805
+  //     }
+  //   ],
+  //   coverImage: [
+  //     {
+  //       fieldname: 'coverImage',
+  //       originalname: 'NNANgW09QELm_1584_396.png',
+  //       encoding: '7bit',
+  //       mimetype: 'image/png',
+  //       destination: './public/temp/',
+  //       filename: 'NNANgW09QELm_1584_396.png',
+  //       path: 'public\\temp\\NNANgW09QELm_1584_396.png',
+  //       size: 92663
+  //     }
+  //   ]
+  // }
