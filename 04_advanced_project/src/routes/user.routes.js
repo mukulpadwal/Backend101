@@ -41,8 +41,9 @@ router.route("/register").post(
 // Route 2 : Login User
 router.route("/login").post(loginUser);
 
-// Secured Routes
+// Route 3 : Logout User
 router.route("/logout").post(verifyJWT, logoutUser);
+
 router.route("/refresh-token").post(refreshAccessToken);
 
 router.route("/change-password").post(verifyJWT, changeCurrentPassword);

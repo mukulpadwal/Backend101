@@ -115,6 +115,7 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, createdUser, "User created"));
 });
 
+// Controller 2 : User Login
 const loginUser = asyncHandler(async (req, res) => {
   // Logic to login user
   // 1. Fetch the data(username or email and password) from the frontend.
@@ -124,16 +125,17 @@ const loginUser = asyncHandler(async (req, res) => {
   // 3. If password is correct then generate access and refresh token and send it to the client through cokkies else throw an error.
 
   const { username, email, password } = req.body;
+
   if (!(username || email)) {
-    throw new ApiError(400, "Username or Email is required");
+    throw new ApiError(400, "username or email is required...");
   }
 
   const user = await User.findOne({
-    $or: [{ username }, { email }],
+    $or: [{ fullName: username }, { email }],
   });
 
   if (!user) {
-    throw new ApiError(404, "User doe's not exist!!!");
+    throw new ApiError(404, "User does not exist!!!");
   }
 
   // Let's check the password
@@ -173,12 +175,13 @@ const loginUser = asyncHandler(async (req, res) => {
     );
 });
 
+// Controller 3 : User Logout
 const logoutUser = asyncHandler(async (req, res) => {
-  await User.findByIdAndUpdate(
+  const user = await User.findByIdAndUpdate(
     req.user._id,
     {
-      $set: {
-        refreshToken: undefined,
+      $unset: {
+        refreshToken: 1,
       },
     },
     {
@@ -186,16 +189,15 @@ const logoutUser = asyncHandler(async (req, res) => {
     }
   );
 
-  const options = {
-    httpOnly: true,
-    secure: true,
-  };
+  if (!user) {
+    throw new ApiError(500, "Error while logging user out...");
+  }
 
   return res
     .status(200)
-    .clearCookie("accessToken", options)
-    .clearCookie("refreshToken", options)
-    .json(new ApiResponse(200, {}, "User Logged Out Successfully!!!"));
+    .clearCookie("accessToken")
+    .clearCookie("refreshToken")
+    .json(new ApiResponse(200, {}, "User Logged Out Successfully..."));
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
