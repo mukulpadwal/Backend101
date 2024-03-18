@@ -65,15 +65,23 @@ const registerUser = asyncHandler(async (req, res) => {
   // Handeling file upload
   // console.log(req.files);
 
-  const avatarLocalPath = req.files?.avatar[0]?.path;
-
+  let avatarLocalPath = "";
   let coverImageLocalPath = "";
-  if (req.files && req.files.coverImage && req.files.coverImage[0].length > 0) {
-    coverImageLocalPath = req.files?.coverImage[0]?.path;
+
+  if (req.files) {
+    const { avatar, coverImage } = req.files;
+
+    if (avatar && avatar.length > 0) {
+      avatarLocalPath = avatar[0].path;
+    }
+
+    if (coverImage && coverImage.length > 0) {
+      coverImageLocalPath = coverImage[0]?.path;
+    }
   }
 
   if (!avatarLocalPath) {
-    throw new ApiError(400, "Avatar is required");
+    throw new ApiError(400, "Avatar is required...");
   }
 
   // uploading to cloudinary
@@ -525,30 +533,29 @@ export {
   });
   */
 
-
-  // [Object: null prototype] {
-  //   avatar: [
-  //     {
-  //       fieldname: 'avatar',
-  //       originalname: '7d34d9d53640af5cfd2614c57dfa7f13.png',
-  //       encoding: '7bit',
-  //       mimetype: 'image/png',
-  //       destination: './public/temp/',
-  //       filename: '7d34d9d53640af5cfd2614c57dfa7f13.png',
-  //       path: 'public\\temp\\7d34d9d53640af5cfd2614c57dfa7f13.png',
-  //       size: 10805
-  //     }
-  //   ],
-  //   coverImage: [
-  //     {
-  //       fieldname: 'coverImage',
-  //       originalname: 'NNANgW09QELm_1584_396.png',
-  //       encoding: '7bit',
-  //       mimetype: 'image/png',
-  //       destination: './public/temp/',
-  //       filename: 'NNANgW09QELm_1584_396.png',
-  //       path: 'public\\temp\\NNANgW09QELm_1584_396.png',
-  //       size: 92663
-  //     }
-  //   ]
-  // }
+// [Object: null prototype] {
+//   avatar: [
+//     {
+//       fieldname: 'avatar',
+//       originalname: '7d34d9d53640af5cfd2614c57dfa7f13.png',
+//       encoding: '7bit',
+//       mimetype: 'image/png',
+//       destination: './public/temp/',
+//       filename: '7d34d9d53640af5cfd2614c57dfa7f13.png',
+//       path: 'public\\temp\\7d34d9d53640af5cfd2614c57dfa7f13.png',
+//       size: 10805
+//     }
+//   ],
+//   coverImage: [
+//     {
+//       fieldname: 'coverImage',
+//       originalname: 'NNANgW09QELm_1584_396.png',
+//       encoding: '7bit',
+//       mimetype: 'image/png',
+//       destination: './public/temp/',
+//       filename: 'NNANgW09QELm_1584_396.png',
+//       path: 'public\\temp\\NNANgW09QELm_1584_396.png',
+//       size: 92663
+//     }
+//   ]
+// }
