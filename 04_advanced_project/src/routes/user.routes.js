@@ -44,8 +44,10 @@ router.route("/login").post(loginUser);
 // Route 3 : Logout User
 router.route("/logout").post(verifyJWT, logoutUser);
 
+// Route 4 : Refresh the Tokens
 router.route("/refresh-token").post(refreshAccessToken);
 
+// Route 5 : Change User Password
 router.route("/change-password").post(verifyJWT, changeCurrentPassword);
 
 router.route("/current-user").get(verifyJWT, getCurrentUser);

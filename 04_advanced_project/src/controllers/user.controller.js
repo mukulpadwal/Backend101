@@ -193,16 +193,22 @@ const logoutUser = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Error while logging user out...");
   }
 
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
   return res
     .status(200)
-    .clearCookie("accessToken")
-    .clearCookie("refreshToken")
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, {}, "User Logged Out Successfully..."));
 });
 
+// Controller 4 : Refresh the Tokens
 const refreshAccessToken = asyncHandler(async (req, res) => {
   const incomingRefreshToken =
-    req.cookies.refreshToken || req.body.refreshToken;
+    req?.cookies?.refreshToken || req?.body?.refreshToken;
 
   if (!incomingRefreshToken) {
     throw new ApiError(401, "Unauthorized Request!!!");
@@ -241,7 +247,6 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
           200,
           {
             accessToken,
-            refreshToken: newRefreshToken,
           },
           "Access Token refreshed!!!"
         )
@@ -251,8 +256,16 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
+// Controller 5 : Change User Password
 const changeCurrentPassword = asyncHandler(async (req, res) => {
-  const { oldPassword, newPassword } = req.body;
+  // 1. Take the oldPassword, newPassword and confirmNewPassword from the user
+  // 2. Authenticate the oldPassword entered by the user
+  // 2.1 If the oldPassword is wrong throw an error
+  // 2.2 If the oldPassword is correct check the newPassword and confirmNewPassword
+  // 3. If both are different throw an error.
+  // 4. If they both are same save it into the dataase and send response
+
+  const { oldPassword, newPassword, confirmNewPassword } = req.body;
 
   const user = await User.findById(req.user?._id);
 
@@ -260,6 +273,17 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 
   if (!isPasswordCorrect) {
     throw new ApiError(400, "Invalid old password");
+  }
+
+  if (!newPassword && !confirmNewPassword) {
+    throw new ApiError(
+      400,
+      "Please give both the newPassword and confirmNewPassword..."
+    );
+  }
+
+  if (newPassword !== confirmNewPassword) {
+    throw new ApiError(400, "newPassword and confirmNewPassword mismatched...");
   }
 
   user.password = newPassword;
