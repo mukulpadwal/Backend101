@@ -295,17 +295,26 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Password Updated Successfully!!!"));
 });
 
+// Controller 6 : Get Current User
 const getCurrentUser = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, req.user, "User Found Successfully!!!"));
 });
 
+// Controller 7 : Update User Account Details
 const updateAccountDetails = asyncHandler(async (req, res) => {
   const { fullName, email } = req.body;
 
-  if (!fullName || !email) {
+  if (!fullName && !email) {
     throw new ApiError(400, "All fields are required!!!");
+  }
+
+  // Let's Check if the email is already taken or not
+  const isEmailTaken = await User.find({email});
+
+  if(isEmailTaken.length > 0){
+    throw new ApiError(400, "User with this email already exists. Please try again with some different email!!");
   }
 
   const user = await User.findByIdAndUpdate(

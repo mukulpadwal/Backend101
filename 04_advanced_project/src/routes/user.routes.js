@@ -50,7 +50,10 @@ router.route("/refresh-token").post(refreshAccessToken);
 // Route 5 : Change User Password
 router.route("/change-password").post(verifyJWT, changeCurrentPassword);
 
+// Route 6 : Get Current User
 router.route("/current-user").get(verifyJWT, getCurrentUser);
+
+// Route 7 : Update User Account Details
 router.route("/update-account").patch(verifyJWT, updateAccountDetails);
 
 router
