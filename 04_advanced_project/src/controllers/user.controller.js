@@ -311,10 +311,13 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
   }
 
   // Let's Check if the email is already taken or not
-  const isEmailTaken = await User.find({email});
+  const isEmailTaken = await User.find({ email });
 
-  if(isEmailTaken.length > 0){
-    throw new ApiError(400, "User with this email already exists. Please try again with some different email!!");
+  if (isEmailTaken.length > 0) {
+    throw new ApiError(
+      400,
+      "User with this email already exists. Please try again with some different email!!"
+    );
   }
 
   const user = await User.findByIdAndUpdate(
@@ -337,6 +340,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
     );
 });
 
+// Controller 8 : Update User Avatar Image
 const updateUserAvatar = asyncHandler(async (req, res) => {
   // 1. get new avatar from the user
   // 2. upload it on cloudinary
@@ -370,6 +374,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, user, "Avatar Uploaded Successfully!!!"));
 });
 
+// Controller 9 : Update User Cover Image
 const updateUserCoverImage = asyncHandler(async (req, res) => {
   const coverImageLocalPath = req.file?.path;
 

@@ -56,12 +56,14 @@ router.route("/current-user").get(verifyJWT, getCurrentUser);
 // Route 7 : Update User Account Details
 router.route("/update-account").patch(verifyJWT, updateAccountDetails);
 
+// Route 8 : Update Avatar Image
 router
   .route("/update-avatar")
   .patch(verifyJWT, upload.single("avatar"), updateUserAvatar);
 
+  // Route 9 : Update Cover Image
 router
-  .route("/update-cover")
+  .route("/update-cover-image")
   .patch(verifyJWT, upload.single("coverImage"), updateUserCoverImage);
 
 router.route("/channel/:username").get(verifyJWT, getUserChannelProfile);
