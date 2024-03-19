@@ -36,7 +36,8 @@ const deleteOnCloudinary = async (cloudinaryFileUrl) => {
       [--cloudinaryFileUrl.split("/").length].split(".")[0];
 
     const response = await cloudinary.api.delete_resources([fileToDelete], {
-      resource_type: "auto",
+      type: "upload",
+      resource_type: "image",
     });
 
     return response;
