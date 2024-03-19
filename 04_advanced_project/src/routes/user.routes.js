@@ -61,13 +61,15 @@ router
   .route("/update-avatar")
   .patch(verifyJWT, upload.single("avatar"), updateUserAvatar);
 
-  // Route 9 : Update Cover Image
+// Route 9 : Update Cover Image
 router
   .route("/update-cover-image")
   .patch(verifyJWT, upload.single("coverImage"), updateUserCoverImage);
 
+// Route 10 : Get User Channel Profile
 router.route("/channel/:username").get(verifyJWT, getUserChannelProfile);
 
+// Route 11 : Get User's Watch History
 router.route("/watch-history").get(verifyJWT, getWatchHistory);
 
 export default router;

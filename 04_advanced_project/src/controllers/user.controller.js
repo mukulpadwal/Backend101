@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js";
 import { deleteOnCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js";
 import ApiResponse from "../utils/apiResponse.js";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 const generateAccessAndRefreshToken = async (userId) => {
   try {
@@ -405,6 +406,7 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, user, "Cover Image Uploaded Successfully!!!"));
 });
 
+// Controller 10 : Get User Channel Profile
 const getUserChannelProfile = asyncHandler(async (req, res) => {
   // We will get the username from the URL
   const { username } = req.params;
@@ -478,8 +480,6 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
     },
   ]);
 
-  console.log(channel);
-
   if (!channel?.length) {
     throw new ApiError(400, "No channel found");
   }
@@ -489,6 +489,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, channel[0], "channel fetched successfully"));
 });
 
+// Controller 11 : Get User's Watch History
 const getWatchHistory = asyncHandler(async (req, res) => {
   const user = await User.aggregate([
     // 1st Pipeline : findind the user
