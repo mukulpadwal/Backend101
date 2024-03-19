@@ -50,6 +50,9 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+
+// This hook is to perform an action just before saing the data to database
+// Here we are hashing the password before saving the data
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, 10);
@@ -57,10 +60,13 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+// Helper function for the user model to check if the user password is correct or not
+// returns true or false based after comparing the password
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
+// Helper function for the user model to generate AccessToken with jwt
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
@@ -76,6 +82,7 @@ userSchema.methods.generateAccessToken = function () {
   );
 };
 
+// Helper function for the user model to generate RefreshToken with jwt
 userSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     {
